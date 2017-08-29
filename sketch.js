@@ -255,6 +255,12 @@ function draw() {
   }
 }
 
+function swap(arr, i, j) {
+  let temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+}
+
 function myShuffle(arr) {
   var i = floor(random(arr.length));
   var j = floor(random(arr.length));
@@ -262,6 +268,11 @@ function myShuffle(arr) {
   if (sounds) {
     osc_main.freq(floor(random(80, 300) + 1) * 5);
   }
+}
+
+function mySort(arr) {
+  shellSort(arr);
+  // ShellSort(arr);
 }
 
 function shellSort(arr) {
@@ -281,63 +292,23 @@ function shellSort(arr) {
   return arr;
 }
 
-function mySort(arr) {
-  shellSort(arr);
-}
-
-function swap(arr, i, j) {
-  let temp = arr[i];
-  arr[i] = arr[j];
-  arr[j] = temp;
-}
-
-function blip(bFrq, eFrq, musical, fInc, duration) {
-  var tDec;
-  if (musical) {
-    tDec = 5;
-  } else {
-    tDec = 1;
-  }
-  var tLeft = 50;
-  if (sounds) {
-    osc_blip.start();
-    for (var i = bFrq; i < eFrq;) {
-      osc_blip.freq(i);
-      osc_blip.amp(aDef);
-      delay(tDec);
-      duration -= tDec;
-      if (musical) {
-        i *= pow(2, (1 / 12));
-      } else {
-        i += fInc;
+// Original sort
+function ShellSort(arr) {
+  gap = floor(arr.length / 2);
+  while (gap > 0) {
+    swapped = true;
+    while (swapped == true) {
+      swapped = false;
+      for (var i = 0; i < (arr.length - gap); i++) {
+        if ((arr[i] > arr[i + gap])) {
+          swap(arr, i, i + gap);
+          swapped = true;
+        }
       }
     }
-    osc_blip.stop();
-    duration = min(duration, tLeft);
+    gap = floor(gap / 2);
   }
-}
-
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
-
-function keypressed() {
-  if (key = 'S') {
-    sounds = !sounds;
-  }
-}
-
-function delay(ms) {
-  var cur_d = new Date();
-  var cur_ticks = cur_d.getTime();
-  var ms_passed = 0;
-  while (ms_passed < ms) {
-    // console.log('IN DELAY...');
-    var d = new Date(); // Possible memory leak?
-    var ticks = d.getTime();
-    ms_passed = ticks - cur_ticks;
-    // d = null; // Prevent memory leak?
-  }
+  return arr;
 }
 
 function secondsToHMS(secs) {
@@ -385,21 +356,51 @@ function spacing(s) {
   return t;
 }
 
-// Original sort
-function ShellSort(arr) {
-  gap = floor(arr.length / 2);
-  while (gap > 0) {
-    swapped = true;
-    while (swapped == true) {
-      swapped = false;
-      for (var i = 0; i < (arr.length - gap); i++) {
-        if ((arr[i] > arr[i + gap])) {
-          swap(arr, i, i + gap);
-          swapped = true;
-        }
+function blip(bFrq, eFrq, musical, fInc, duration) {
+  var tDec;
+  if (musical) {
+    tDec = 5;
+  } else {
+    tDec = 1;
+  }
+  var tLeft = 50;
+  if (sounds) {
+    osc_blip.start();
+    for (var i = bFrq; i < eFrq;) {
+      osc_blip.freq(i);
+      osc_blip.amp(aDef);
+      delay(tDec);
+      duration -= tDec;
+      if (musical) {
+        i *= pow(2, (1 / 12));
+      } else {
+        i += fInc;
       }
     }
-    gap = floor(gap / 2);
+    osc_blip.stop();
+    duration = min(duration, tLeft);
   }
-  return arr;
+}
+
+function delay(ms) {
+  var cur_d = new Date();
+  var cur_ticks = cur_d.getTime();
+  var ms_passed = 0;
+  while (ms_passed < ms) {
+    // console.log('IN DELAY...');
+    var d = new Date(); // Possible memory leak?
+    var ticks = d.getTime();
+    ms_passed = ticks - cur_ticks;
+    // d = null; // Prevent memory leak?
+  }
+}
+
+function keypressed() {
+  if (key = 'S') {
+    sounds = !sounds;
+  }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
